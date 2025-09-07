@@ -23,7 +23,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const fetchUser = async () => {
         setLoading(true)
         try {
-            const res = await fetch('http://localhost:3000/me', {
+            const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/me`, {
                 credentials: 'include'
             })
             if (!res.ok) throw new Error('Not authenticated')
@@ -42,11 +42,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, [])
 
     const login = () => {
-        window.location.href = 'http://localhost:3000/login'
+        window.location.href = `${import.meta.env.VITE_BACKEND_URL}/login`
     }
 
     const logout = () => {
-        window.location.href = 'http://localhost:3000/logout'
+        window.location.href = `${import.meta.env.VITE_BACKEND_URL}/logout`
     }
 
     return (

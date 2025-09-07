@@ -29,6 +29,7 @@ const keycloakAuth = new KeycloakAuth({
 app.get('/login', keycloakAuth.loginRoute)
 app.get('/callback', keycloakAuth.callbackRoute)
 app.get('/logout', keycloakAuth.logoutRoute)
+app.get('/refresh', keycloakAuth.refreshRoute)
 
 app.get('/me', keycloakAuth.verifyAuth, (req, res) => {
     res.json({ user: req.user })

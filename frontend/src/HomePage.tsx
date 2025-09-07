@@ -6,7 +6,7 @@ export function HomePage() {
     if (loading) return <p>Loading...</p>
 
     const idk = async () => {
-        const res = await fetch('http://localhost:3000/me', {
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/me`, {
             credentials: 'include'
         })
         if (!res.ok) throw new Error('Not authenticated')

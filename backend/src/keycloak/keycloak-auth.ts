@@ -151,6 +151,66 @@ export class KeycloakAuth {
         res.redirect(logoutUrl)
     }
 
+    public refreshRoute = async (req: Request, res: Response) => {
+        const refreshToken = req.cookies.refresh_token
+
+        if (!refreshToken) {
+            res.status(401).json({ message: 'Missing refresh token' })
+            return
+        }
+
+        try {
+            const body = new URLSearchParams({
+                refresh_token: req.cookies.refresh_token,
+                grant_type: 'refresh_token',
+                client_id: this.config.keycloak_client_id
+            })
+
+            const tokenRes = await fetch(`${this.config.keycloak_realm_url}/protocol/openid-connect/token`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: body.toString()
+            })
+
+            if (!tokenRes.ok) {
+                const errorText = await tokenRes.text()
+                console.error('Token exchange failed:', errorText)
+                res.status(500).send('Authentication failed')
+                return
+            }
+
+            const { access_token, refresh_token, id_token } = await tokenRes.json()
+
+            res.cookie('access_token', access_token, {
+                httpOnly: true,
+                secure: this.config.secure,
+                sameSite: this.config.same_site,
+                maxAge: this.config.access_token_max_age
+            })
+
+            res.cookie('refresh_token', refresh_token, {
+                httpOnly: true,
+                secure: this.config.secure,
+                sameSite: this.config.same_site,
+                maxAge: this.config.refresh_token_max_age
+            })
+
+            res.cookie('id_token', id_token, {
+                httpOnly: true,
+                secure: this.config.secure,
+                sameSite: this.config.same_site,
+                maxAge: this.config.access_token_max_age
+            })
+
+            res.status(200).send('Successfully refreshed acess token')
+        } catch (error) {
+            console.error('Unexpected error during access token refresh:', error)
+            res.status(500).send('Failed to refresh access token')
+        }
+    }
+
     public verifyAuth = async (req: Request, res: Response, next: NextFunction) => {
         const token = req.cookies.access_token
 
