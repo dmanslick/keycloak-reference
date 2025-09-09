@@ -1,3 +1,4 @@
+import { apiClient } from './apiClient'
 import { useAuth } from './AuthContext'
 
 export function HomePage() {
@@ -6,12 +7,12 @@ export function HomePage() {
     if (loading) return <p>Loading...</p>
 
     const idk = async () => {
-        const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/me`, {
-            credentials: 'include'
-        })
-        if (!res.ok) throw new Error('Not authenticated')
-        const data = await res.json()
-        console.log(data)
+        try {
+            const res = await apiClient.get('/me')
+            console.log(res.data)
+        } catch (error) {
+            window.Error('Not authenticated')
+        }
     }
 
     return (

@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
+import { apiClient } from './apiClient'
 
 interface User {
     sub: string
@@ -23,14 +24,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const fetchUser = async () => {
         setLoading(true)
         try {
-            const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/me`, {
-                credentials: 'include'
-            })
-            if (!res.ok) throw new Error('Not authenticated')
-            const data = await res.json()
-            console.log(data)
-            setUser(data.user)
-        } catch {
+            const res = await apiClient.get('/me')
+            console.log(res.data)
+            setUser(res.data.user)
+        } catch (error) {
+            console.error('Not authenticated')
             setUser(null)
         } finally {
             setLoading(false)
@@ -42,11 +40,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }, [])
 
     const login = () => {
-        window.location.href = `${import.meta.env.VITE_BACKEND_URL}/auth/login`
+        window.location.href = `${import.meta.env.VITE_BACKEND_URL}/login`
     }
 
     const logout = () => {
-        window.location.href = `${import.meta.env.VITE_BACKEND_URL}/auth/logout`
+        window.location.href = `${import.meta.env.VITE_BACKEND_URL}/logout`
     }
 
     return (

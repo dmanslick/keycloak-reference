@@ -5,6 +5,7 @@ import type { NextFunction, Request, Response } from 'express'
 interface KeycloakAuthConfig {
     backend_url: string
     frontend_url: string
+    callback_url: string
     keycloak_realm_url: string
     keycloak_client_id: string
     keycloak_client_secret: string
@@ -43,7 +44,7 @@ export class KeycloakAuth {
     }
 
     public loginRoute = (req: Request, res: Response) => {
-        const redirectUri = `${this.config.backend_url}/callback`
+        const redirectUri = this.config.callback_url
         const authUrl =
             `${this.config.keycloak_realm_url}/protocol/openid-connect/auth` +
             `?client_id=${this.config.keycloak_client_id}` +
@@ -56,7 +57,7 @@ export class KeycloakAuth {
 
     public callbackRoute = async (req: Request, res: Response) => {
         const { code } = req.query
-        const redirectUri = `${this.config.backend_url}/callback`
+        const redirectUri = this.config.callback_url
 
         try {
             const body = new URLSearchParams({

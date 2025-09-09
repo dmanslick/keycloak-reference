@@ -17,6 +17,7 @@ app.use(cors({
 const keycloakAuth = new KeycloakAuth({
     backend_url: process.env.BACKEND_URL!,
     frontend_url: process.env.FRONTEND_URL!,
+    callback_url: process.env.CALLBACK_URL!, // must be configured within keycloak too
     keycloak_realm_url: process.env.KEYCLOAK_REALM_URL!,
     keycloak_client_id: process.env.KEYCLOAK_CLIENT_ID!,
     keycloak_client_secret: process.env.KEYCLOAK_CLIENT_SECRET!,
@@ -26,12 +27,12 @@ const keycloakAuth = new KeycloakAuth({
     secure: false
 })
 
-app.get('/auth/login', keycloakAuth.loginRoute)
-app.get('/auth/callback', keycloakAuth.callbackRoute)
-app.get('/auth/logout', keycloakAuth.logoutRoute)
-app.post('/auth/refresh', keycloakAuth.refreshRoute)
+app.get('/login', keycloakAuth.loginRoute)
+app.get('/callback', keycloakAuth.callbackRoute)
+app.get('/logout', keycloakAuth.logoutRoute)
+app.get('/refresh', keycloakAuth.refreshRoute)
 
-app.get('/auth/me', keycloakAuth.verifyAuth, (req, res) => {
+app.get('/me', keycloakAuth.verifyAuth, (req, res) => {
     res.json({ user: req.user })
 })
 

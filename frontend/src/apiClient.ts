@@ -10,7 +10,7 @@ const handleAuthRefresh = async (failedRequest: any) => {
     try {
         return await axios.post(`${import.meta.env.VITE_BACKEND_URL}/refresh`, {}, { withCredentials: true })
     } catch (error) {
-        window.location.href = `${import.meta.env.VITE_BACKEND_URL}/auth/login`
+        window.location.href = `${import.meta.env.VITE_BACKEND_URL}/login`
         return Promise.reject(error)
     }
 }
