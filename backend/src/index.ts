@@ -26,12 +26,12 @@ const keycloakAuth = new KeycloakAuth({
     secure: false
 })
 
-app.get('/login', keycloakAuth.loginRoute)
-app.get('/callback', keycloakAuth.callbackRoute)
-app.get('/logout', keycloakAuth.logoutRoute)
-app.get('/refresh', keycloakAuth.refreshRoute)
+app.get('/auth/login', keycloakAuth.loginRoute)
+app.get('/auth/callback', keycloakAuth.callbackRoute)
+app.get('/auth/logout', keycloakAuth.logoutRoute)
+app.post('/auth/refresh', keycloakAuth.refreshRoute)
 
-app.get('/me', keycloakAuth.verifyAuth, (req, res) => {
+app.get('/auth/me', keycloakAuth.verifyAuth, (req, res) => {
     res.json({ user: req.user })
 })
 
